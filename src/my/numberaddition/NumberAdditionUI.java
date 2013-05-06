@@ -657,7 +657,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
             input = input.substring(0, 3);
          }
          int previous = 0;
-         int intInput = Integer.parseInt(input);
+         int intInput = Integer.parseInt(input);         
          for (int i = scale; i <= 1000; i += scale) {
             if (intInput > previous && intInput <= i) {
                if (intInput * 2 <= i) {
@@ -669,7 +669,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
                }
             }
             previous = i;
-         }
+         }         
       }
 
       public int getInput() {
@@ -803,10 +803,10 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       if (source != PIN) {
          pinTextField.setText(makeReadable(vol.getPin()));
       }
-      if (source != FOZ) {
+      if (source != FOZ) {         
          fozTextField.setText(makeReadable(vol.getFoz()));
       }
-      if (source != LIT) {
+      if (source != LIT) {         
          litTextField.setText(makeReadable(vol.getLit()));
       }
    }
@@ -830,9 +830,9 @@ public class NumberAdditionUI extends javax.swing.JFrame {
             decimalPlaces = 0;
          } else {
             int roundedInt = new ROUND(preparedString.substring(integerPlaces + 1)).getOutput();
-            if (roundedInt == 1) {
+            if (roundedInt == 1000) {
                integerPlaces = Integer.parseInt(preparedString.substring(0, integerPlaces)) + 1;
-               preparedString = Integer.toString(integerPlaces);
+               preparedString = Integer.toString(integerPlaces);               
             } else {
                integerPlaces = Integer.parseInt(preparedString.substring(0, integerPlaces));
                preparedString = (Integer.toString(integerPlaces) + '.' + Integer.toString(roundedInt));
