@@ -1,6 +1,8 @@
 package my.numberaddition;
 
 import java.awt.*;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
@@ -17,7 +19,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    private final int QTS = 4;
    private final int GAL = 5;
    private final int PIN = 6;
-   private final int MIL = 7;
+   private final int FOZ = 7;
    private final int LIT = 8;
    /* Conversion units */
    private final double CUP_TO_TSP = 48.0;
@@ -25,7 +27,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    private final double CUP_TO_QTS = 0.25;
    private final double CUP_TO_PIN = 0.5;
    private final double CUP_TO_GAL = 0.0625;
-   private final double CUP_TO_MIL = 236.5882;
+   private final double CUP_TO_FOZ = 8.0;
    private final double CUP_TO_LIT = 0.2366;
    /* Track field in which key event is registered */
    private boolean CUP_FIELD = false;
@@ -34,7 +36,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    private boolean QTS_FIELD = false;
    private boolean GAL_FIELD = false;
    private boolean PIN_FIELD = false;
-   private boolean MIL_FIELD = false;
+   private boolean FOZ_FIELD = false;
    private boolean LIT_FIELD = false;
 
    public NumberAdditionUI() throws HeadlessException {      
@@ -79,23 +81,23 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    private void initComponents() {
 
       jPanel1 = new javax.swing.JPanel();
-      qtsTextField = new javax.swing.JTextField();
-      cupTextField = new javax.swing.JTextField();
-      jLabel6 = new javax.swing.JLabel();
-      pinTextField = new javax.swing.JTextField();
-      jLabel1 = new javax.swing.JLabel();
       tbspTextField = new javax.swing.JTextField();
       jLabel3 = new javax.swing.JLabel();
-      milTextField = new javax.swing.JTextField();
-      galTextField = new javax.swing.JTextField();
       jLabel8 = new javax.swing.JLabel();
       litTextField = new javax.swing.JTextField();
-      jLabel4 = new javax.swing.JLabel();
       jLabel2 = new javax.swing.JLabel();
-      jLabel7 = new javax.swing.JLabel();
-      jLabel5 = new javax.swing.JLabel();
       tspTextField = new javax.swing.JTextField();
       jSeparator1 = new javax.swing.JSeparator();
+      cupTextField = new javax.swing.JTextField();
+      jLabel1 = new javax.swing.JLabel();
+      pinTextField = new javax.swing.JTextField();
+      qtsTextField = new javax.swing.JTextField();
+      jLabel5 = new javax.swing.JLabel();
+      galTextField = new javax.swing.JTextField();
+      jLabel6 = new javax.swing.JLabel();
+      jLabel4 = new javax.swing.JLabel();
+      fozTextField = new javax.swing.JTextField();
+      jLabel7 = new javax.swing.JLabel();
       jPanel3 = new javax.swing.JPanel();
       scaleSlider = new javax.swing.JSlider();
       jLabel9 = new javax.swing.JLabel();
@@ -106,30 +108,9 @@ public class NumberAdditionUI extends javax.swing.JFrame {
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
       setTitle("Split It!");
+      setIconImages(null);
 
       jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Volume"));
-
-      qtsTextField.addFocusListener(new java.awt.event.FocusAdapter() {
-         public void focusGained(java.awt.event.FocusEvent evt) {
-            qtsTextFieldFocusGained(evt);
-         }
-      });
-
-      cupTextField.addFocusListener(new java.awt.event.FocusAdapter() {
-         public void focusGained(java.awt.event.FocusEvent evt) {
-            cupTextFieldFocusGained(evt);
-         }
-      });
-
-      jLabel6.setText("Pint");
-
-      pinTextField.addFocusListener(new java.awt.event.FocusAdapter() {
-         public void focusGained(java.awt.event.FocusEvent evt) {
-            pinTextFieldFocusGained(evt);
-         }
-      });
-
-      jLabel1.setText("Cup");
 
       tbspTextField.addFocusListener(new java.awt.event.FocusAdapter() {
          public void focusGained(java.awt.event.FocusEvent evt) {
@@ -139,18 +120,6 @@ public class NumberAdditionUI extends javax.swing.JFrame {
 
       jLabel3.setText("Teaspoon");
 
-      milTextField.addFocusListener(new java.awt.event.FocusAdapter() {
-         public void focusGained(java.awt.event.FocusEvent evt) {
-            milTextFieldFocusGained(evt);
-         }
-      });
-
-      galTextField.addFocusListener(new java.awt.event.FocusAdapter() {
-         public void focusGained(java.awt.event.FocusEvent evt) {
-            galTextFieldFocusGained(evt);
-         }
-      });
-
       jLabel8.setText("Liter");
 
       litTextField.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -159,13 +128,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          }
       });
 
-      jLabel4.setText("Gallon");
-
       jLabel2.setText("Tablespoon");
-
-      jLabel7.setText("Milliliter");
-
-      jLabel5.setText("Quart");
 
       tspTextField.addFocusListener(new java.awt.event.FocusAdapter() {
          public void focusGained(java.awt.event.FocusEvent evt) {
@@ -173,23 +136,74 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          }
       });
 
+      cupTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            cupTextFieldFocusGained(evt);
+         }
+      });
+
+      jLabel1.setText("Cup");
+
+      pinTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            pinTextFieldFocusGained(evt);
+         }
+      });
+
+      qtsTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            qtsTextFieldFocusGained(evt);
+         }
+      });
+
+      jLabel5.setText("Quart");
+
+      galTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            galTextFieldFocusGained(evt);
+         }
+      });
+
+      jLabel6.setText("Pint");
+
+      jLabel4.setText("Gallon");
+
+      fozTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            fozTextFieldFocusGained(evt);
+         }
+      });
+
+      jLabel7.setText("Fluid Ounces");
+
       javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
       jPanel1.setLayout(jPanel1Layout);
       jPanel1Layout.setHorizontalGroup(
          jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+         .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
          .addGroup(jPanel1Layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                .addGroup(jPanel1Layout.createSequentialGroup()
                   .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                     .addComponent(tspTextField)
-                     .addComponent(tbspTextField)
-                     .addComponent(cupTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                     .addComponent(tspTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                     .addComponent(tbspTextField))
                   .addGap(36, 36, 36)
                   .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                      .addComponent(jLabel3)
-                     .addComponent(jLabel1)
                      .addComponent(jLabel2)))
+               .addGroup(jPanel1Layout.createSequentialGroup()
+                  .addComponent(litTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addGap(36, 36, 36)
+                  .addComponent(jLabel8))
+               .addGroup(jPanel1Layout.createSequentialGroup()
+                  .addComponent(fozTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addGap(36, 36, 36)
+                  .addComponent(jLabel7))
+               .addGroup(jPanel1Layout.createSequentialGroup()
+                  .addComponent(cupTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addGap(36, 36, 36)
+                  .addComponent(jLabel1))
                .addGroup(jPanel1Layout.createSequentialGroup()
                   .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                      .addComponent(qtsTextField)
@@ -199,17 +213,8 @@ public class NumberAdditionUI extends javax.swing.JFrame {
                   .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                      .addComponent(jLabel4)
                      .addComponent(jLabel5)
-                     .addComponent(jLabel6)))
-               .addGroup(jPanel1Layout.createSequentialGroup()
-                  .addComponent(milTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addGap(36, 36, 36)
-                  .addComponent(jLabel7))
-               .addGroup(jPanel1Layout.createSequentialGroup()
-                  .addComponent(litTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addGap(36, 36, 36)
-                  .addComponent(jLabel8)))
-            .addContainerGap())
-         .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+                     .addComponent(jLabel6))))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
       );
       jPanel1Layout.setVerticalGroup(
          jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,6 +227,10 @@ public class NumberAdditionUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                .addComponent(tbspTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addComponent(jLabel2))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+               .addComponent(fozTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(jLabel7))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                .addComponent(jLabel1)
@@ -240,10 +249,6 @@ public class NumberAdditionUI extends javax.swing.JFrame {
                .addComponent(galTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-               .addComponent(milTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(jLabel7))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                .addComponent(litTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -304,9 +309,8 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       layout.setHorizontalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
          .addGroup(layout.createSequentialGroup()
-            .addContainerGap()
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addGroup(layout.createSequentialGroup()
                   .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                      .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -317,8 +321,9 @@ public class NumberAdditionUI extends javax.swing.JFrame {
                         .addComponent(jLabel11))
                      .addGroup(layout.createSequentialGroup()
                         .addGap(37, 37, 37)
-                        .addComponent(jLabel10)))))
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel10)
+                        .addGap(87, 87, 87))))
+               .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -357,9 +362,9 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    private void galTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_galTextFieldFocusGained
       galTextField.setText("");
    }//GEN-LAST:event_galTextFieldFocusGained
-   private void milTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_milTextFieldFocusGained
-      milTextField.setText("");
-   }//GEN-LAST:event_milTextFieldFocusGained
+   private void fozTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fozTextFieldFocusGained
+      fozTextField.setText("");
+   }//GEN-LAST:event_fozTextFieldFocusGained
    private void litTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_litTextFieldFocusGained
       litTextField.setText("");
    }//GEN-LAST:event_litTextFieldFocusGained
@@ -372,7 +377,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = false;
       GAL_FIELD = false;
       PIN_FIELD = false;
-      MIL_FIELD = false;
+      FOZ_FIELD = false;
       LIT_FIELD = false;
    }
    private void tspTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
@@ -383,7 +388,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = false;
       GAL_FIELD = false;
       PIN_FIELD = false;
-      MIL_FIELD = false;
+      FOZ_FIELD = false;
       LIT_FIELD = false;
    }
    private void litTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
@@ -394,10 +399,10 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = false;
       GAL_FIELD = false;
       PIN_FIELD = false;
-      MIL_FIELD = false;
+      FOZ_FIELD = false;
       LIT_FIELD = true;
    }
-   private void milTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
+   private void fozTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
       //textFieldKeyPressed(evt, MIL, milTextField.getText());
       CUP_FIELD = false;
       TSP_FIELD = false;
@@ -405,7 +410,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = false;
       GAL_FIELD = false;
       PIN_FIELD = false;
-      MIL_FIELD = true;
+      FOZ_FIELD = true;
       LIT_FIELD = false;
    }
    private void galTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
@@ -416,7 +421,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = false;
       GAL_FIELD = true;
       PIN_FIELD = false;
-      MIL_FIELD = false;
+      FOZ_FIELD = false;
       LIT_FIELD = false;
    }
    private void qtsTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
@@ -427,7 +432,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = true;
       GAL_FIELD = false;
       PIN_FIELD = false;
-      MIL_FIELD = false;
+      FOZ_FIELD = false;
       LIT_FIELD = false;
    }
    private void pinTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
@@ -438,7 +443,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = false;
       GAL_FIELD = false;
       PIN_FIELD = true;
-      MIL_FIELD = false;
+      FOZ_FIELD = false;
       LIT_FIELD = false;
    }
    private void tbspTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                         
@@ -449,7 +454,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       QTS_FIELD = false;
       GAL_FIELD = false;
       PIN_FIELD = false;
-      MIL_FIELD = false;
+      FOZ_FIELD = false;
       LIT_FIELD = false;
    }
    
@@ -460,7 +465,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       Document QTS_DOC = qtsTextField.getDocument();
       Document GAL_DOC = galTextField.getDocument();
       Document PIN_DOC = pinTextField.getDocument();
-      Document MIL_DOC = milTextField.getDocument();
+      Document FOZ_DOC = fozTextField.getDocument();
       Document LIT_DOC = litTextField.getDocument();
       int source = 0;
       
@@ -475,7 +480,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          if(doc == QTS_DOC) source = 4;
          if(doc == GAL_DOC) source = 5;
          if(doc == PIN_DOC) source = 6;
-         if(doc == MIL_DOC) source = 7;
+         if(doc == FOZ_DOC) source = 7;
          if(doc == LIT_DOC) source = 8;
          String val = "0.0";
          try {
@@ -487,21 +492,21 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          } catch (BadLocationException ex) { }            
          // Call will only matter if event is triggered by user input
          switch(source) {
-            case 1:  if(CUP_FIELD) setConvertVal(CUP, new US_VOL(Double.parseDouble(val), CUP));
+            case 1:  if(CUP_FIELD) setConvertVal(CUP, new US_VOL(purifyStringToDouble(val), CUP));
                      break;
-            case 2:  if(TSP_FIELD) setConvertVal(TSP, new US_VOL(Double.parseDouble(val), TSP));
+            case 2:  if(TSP_FIELD) setConvertVal(TSP, new US_VOL(purifyStringToDouble(val), TSP));
                      break;
-            case 3:  if(TBSP_FIELD) setConvertVal(TBSP, new US_VOL(Double.parseDouble(val), TBSP));
+            case 3:  if(TBSP_FIELD) setConvertVal(TBSP, new US_VOL(purifyStringToDouble(val), TBSP));
                      break;
-            case 4:  if(QTS_FIELD) setConvertVal(QTS, new US_VOL(Double.parseDouble(val), QTS));
+            case 4:  if(QTS_FIELD) setConvertVal(QTS, new US_VOL(purifyStringToDouble(val), QTS));
                      break;
-            case 5:  if(GAL_FIELD) setConvertVal(GAL, new US_VOL(Double.parseDouble(val), GAL));
+            case 5:  if(GAL_FIELD) setConvertVal(GAL, new US_VOL(purifyStringToDouble(val), GAL));
                      break;
-            case 6:  if(PIN_FIELD) setConvertVal(PIN, new US_VOL(Double.parseDouble(val), PIN));
+            case 6:  if(PIN_FIELD) setConvertVal(PIN, new US_VOL(purifyStringToDouble(val), PIN));
                      break;
-            case 7:  if(MIL_FIELD) setConvertVal(MIL, new US_VOL(Double.parseDouble(val), MIL));
+            case 7:  if(FOZ_FIELD) setConvertVal(FOZ, new US_VOL(purifyStringToDouble(val), FOZ));
                      break;
-            case 8:  if(LIT_FIELD) setConvertVal(LIT, new US_VOL(Double.parseDouble(val), LIT));
+            case 8:  if(LIT_FIELD) setConvertVal(LIT, new US_VOL(purifyStringToDouble(val), LIT));
                      break;
          }
       }
@@ -527,7 +532,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       double gal;
       double pin;
       double lit;
-      double mil;
+      double foz;
       int source;
 
       public US_VOL(double cup, int source) {
@@ -551,8 +556,8 @@ public class NumberAdditionUI extends javax.swing.JFrame {
             case PIN:
                this.cup = cup / CUP_TO_PIN;
                break;
-            case MIL:
-               this.cup = cup / CUP_TO_MIL;
+            case FOZ:
+               this.cup = cup / CUP_TO_FOZ;
                break;
             case LIT:
                this.cup = cup / CUP_TO_LIT;
@@ -567,7 +572,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          this.qts = CUP_TO_QTS * this.cup;
          this.gal = CUP_TO_GAL * this.cup;
          this.pin = CUP_TO_PIN * this.cup;
-         this.mil = CUP_TO_MIL * this.cup;
+         this.foz = CUP_TO_FOZ * this.cup;
          this.lit = CUP_TO_LIT * this.cup;
       }
 
@@ -627,12 +632,12 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          this.lit = lit;
       }
 
-      public double getMil() {
-         return mil;
+      public double getFoz() {
+         return foz;
       }
 
-      public void setMil(double mil) {
-         this.mil = mil;
+      public void setFoz(double foz) {
+         this.foz = foz;
       }
    }
    public class ROUND {
@@ -684,7 +689,20 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       }
    }
 
+   private double purifyStringToDouble(String input) {
+      // "Tiny" is caught and turned into 0.0
+      Double val = 0.0;
+      try {
+         val = Double.parseDouble(input);
+      } catch (NumberFormatException nfe) { }
+      return val;
+   }
    private void initListeners() {
+      /* Set icon, default if fails */
+      try {
+         Image i = ImageIO.read(getClass().getResource("/my/numberaddition/arrow_split_right.png"));
+         setIconImage(i);
+      } catch (IOException e) { }
       // Initialize DocumentListener before KeyListener
       cupTextField.getDocument().addDocumentListener(new customDocListener());
       tspTextField.getDocument().addDocumentListener(new customDocListener());
@@ -692,7 +710,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       qtsTextField.getDocument().addDocumentListener(new customDocListener());
       galTextField.getDocument().addDocumentListener(new customDocListener());
       pinTextField.getDocument().addDocumentListener(new customDocListener());
-      milTextField.getDocument().addDocumentListener(new customDocListener());
+      fozTextField.getDocument().addDocumentListener(new customDocListener());
       litTextField.getDocument().addDocumentListener(new customDocListener());      
       
       qtsTextField.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -715,9 +733,9 @@ public class NumberAdditionUI extends javax.swing.JFrame {
             tbspTextFieldKeyPressed(evt);
          }
       });
-      milTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+      fozTextField.addKeyListener(new java.awt.event.KeyAdapter() {
          public void keyPressed(java.awt.event.KeyEvent evt) {
-            milTextFieldKeyPressed(evt);
+            fozTextFieldKeyPressed(evt);
          }
       });
       galTextField.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -762,11 +780,11 @@ public class NumberAdditionUI extends javax.swing.JFrame {
             break;
       }
       scaleSlider.setValue(7);
-      setConvertVal(0, new US_VOL(Double.parseDouble(cupTextField.getText()) * scaleBy, 0));
+      Double val = purifyStringToDouble(cupTextField.getText());      
+      setConvertVal(0, new US_VOL(val * scaleBy, 0));
    }
    private void setConvertVal(int source, US_VOL vol) {
       // TODO: Reduce IFs if possible
-      log("Have we failed?");
       if (source != CUP) {
          cupTextField.setText(makeReadable(vol.getCup()));
       }
@@ -785,8 +803,8 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       if (source != PIN) {
          pinTextField.setText(makeReadable(vol.getPin()));
       }
-      if (source != MIL) {
-         milTextField.setText(makeReadable(vol.getMil()));
+      if (source != FOZ) {
+         fozTextField.setText(makeReadable(vol.getFoz()));
       }
       if (source != LIT) {
          litTextField.setText(makeReadable(vol.getLit()));
@@ -838,11 +856,12 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    }
    
    public static void main(String args[]) {
+      
       /* Set the Nimbus look and feel */
       //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
        * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-       */      
+       */
       try {
          for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
             if ("Nimbus".equals(info.getName())) {
@@ -870,6 +889,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    }
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JTextField cupTextField;
+   private javax.swing.JTextField fozTextField;
    private javax.swing.JTextField galTextField;
    private javax.swing.JLabel jLabel1;
    private javax.swing.JLabel jLabel10;
@@ -888,7 +908,6 @@ public class NumberAdditionUI extends javax.swing.JFrame {
    private javax.swing.JPanel jPanel4;
    private javax.swing.JSeparator jSeparator1;
    private javax.swing.JTextField litTextField;
-   private javax.swing.JTextField milTextField;
    private javax.swing.JTextField pinTextField;
    private javax.swing.JTextField qtsTextField;
    private javax.swing.JSlider scaleSlider;
