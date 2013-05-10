@@ -2,45 +2,22 @@ package my.numberaddition;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
 public class NumberAdditionUI extends javax.swing.JFrame {
-   /* TODO: Store original value for scale accuracy improvement
-    * TODO: This would benefit scaling as the slider could be made
-    * TODO: in a more natural way. */
-   public int LOG_LINE_NUM = 0;
-   /* Readability enhancers */
-   private final int CUP = 1;
-   private final int TSP = 2;
-   private final int TBSP = 3;
-   private final int QTS = 4;
-   private final int GAL = 5;
-   private final int PIN = 6;
-   private final int FOZ = 7;
-   private final int LIT = 8;
-   /* Conversion units */
-   private final double CUP_TO_TSP = 48.0;
-   private final double CUP_TO_TBSP = 16.0;
-   private final double CUP_TO_QTS = 0.25;
-   private final double CUP_TO_PIN = 0.5;
-   private final double CUP_TO_GAL = 0.0625;
-   private final double CUP_TO_FOZ = 8.0;
-   private final double CUP_TO_LIT = 0.2366;
-   /* Track field in which key event is registered */
-   private boolean CUP_FIELD = false;
-   private boolean TSP_FIELD = false;
-   private boolean TBSP_FIELD = false;
-   private boolean QTS_FIELD = false;
-   private boolean GAL_FIELD = false;
-   private boolean PIN_FIELD = false;
-   private boolean FOZ_FIELD = false;
-   private boolean LIT_FIELD = false;
+	private static final long serialVersionUID = 1L;
+	public int LOG_LINE_NUM = 0;           // Debugging, iterates with each call to log()
+   public double lastScale = 1.0;         // Holds the last set value on the scale
+   public boolean scaleUserReset = true;  // Detects if user reset scale 
+	ArrayList<US_VOL> volumes = new ArrayList<US_VOL>();   
 
    public NumberAdditionUI() throws HeadlessException {      
       initComponents();
+      initMeasures();      
       initListeners();
    }
 
@@ -344,358 +321,132 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       pack();
    }// </editor-fold>//GEN-END:initComponents
 
+   /* Clear fields when focused */
    private void tspTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tspTextFieldFocusGained
       tspTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_tspTextFieldFocusGained
    private void tbspTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tbspTextFieldFocusGained
       tbspTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_tbspTextFieldFocusGained
    private void cupTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cupTextFieldFocusGained
       cupTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_cupTextFieldFocusGained
    private void pinTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pinTextFieldFocusGained
       pinTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_pinTextFieldFocusGained
    private void qtsTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_qtsTextFieldFocusGained
       qtsTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_qtsTextFieldFocusGained
    private void galTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_galTextFieldFocusGained
       galTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_galTextFieldFocusGained
    private void fozTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fozTextFieldFocusGained
       fozTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_fozTextFieldFocusGained
    private void litTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_litTextFieldFocusGained
       litTextField.setText("");
+      resetScale();
    }//GEN-LAST:event_litTextFieldFocusGained
    
-   private void cupTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
-      //textFieldKeyPressed(evt, CUP, cupTextField.getText());
-      CUP_FIELD = true;
-      TSP_FIELD = false;
-      TBSP_FIELD = false;
-      QTS_FIELD = false;
-      GAL_FIELD = false;
-      PIN_FIELD = false;
-      FOZ_FIELD = false;
-      LIT_FIELD = false;
+   /* Set source in measurement element of volume collection */
+   private void cupTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 1; // CUP 
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
-   private void tspTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
-      //textFieldKeyPressed(evt, TSP, tspTextField.getText());
-      CUP_FIELD = false;
-      TSP_FIELD = true;
-      TBSP_FIELD = false;
-      QTS_FIELD = false;
-      GAL_FIELD = false;
-      PIN_FIELD = false;
-      FOZ_FIELD = false;
-      LIT_FIELD = false;
+   private void tspTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 2; // TSP 
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
-   private void litTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
-      //textFieldKeyPressed(evt, LIT, litTextField.getText());
-      CUP_FIELD = false;
-      TSP_FIELD = false;
-      TBSP_FIELD = false;
-      QTS_FIELD = false;
-      GAL_FIELD = false;
-      PIN_FIELD = false;
-      FOZ_FIELD = false;
-      LIT_FIELD = true;
+   private void litTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 8; // LIT ER
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
-   private void fozTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
-      //textFieldKeyPressed(evt, MIL, milTextField.getText());
-      CUP_FIELD = false;
-      TSP_FIELD = false;
-      TBSP_FIELD = false;
-      QTS_FIELD = false;
-      GAL_FIELD = false;
-      PIN_FIELD = false;
-      FOZ_FIELD = true;
-      LIT_FIELD = false;
+   private void fozTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 4; // FLUID OUNCE 
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
-   private void galTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
-      //textFieldKeyPressed(evt, GAL, galTextField.getText());
-      CUP_FIELD = false;
-      TSP_FIELD = false;
-      TBSP_FIELD = false;
-      QTS_FIELD = false;
-      GAL_FIELD = true;
-      PIN_FIELD = false;
-      FOZ_FIELD = false;
-      LIT_FIELD = false;
+   private void galTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 7; // GALLON 
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
-   private void qtsTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
-      //textFieldKeyPressed(evt, QTS, qtsTextField.getText());
-      CUP_FIELD = false;
-      TSP_FIELD = false;
-      TBSP_FIELD = false;
-      QTS_FIELD = true;
-      GAL_FIELD = false;
-      PIN_FIELD = false;
-      FOZ_FIELD = false;
-      LIT_FIELD = false;
+   private void qtsTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 6; // QUART 
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
-   private void pinTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                        
-      //textFieldKeyPressed(evt, PIN, pinTextField.getText());
-      CUP_FIELD = false;
-      TSP_FIELD = false;
-      TBSP_FIELD = false;
-      QTS_FIELD = false;
-      GAL_FIELD = false;
-      PIN_FIELD = true;
-      FOZ_FIELD = false;
-      LIT_FIELD = false;
+   private void pinTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 5; // PINT 
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
-   private void tbspTextFieldKeyPressed(java.awt.event.KeyEvent evt) {                                         
-      //textFieldKeyPressed(evt, TBSP, tbspTextField.getText());
-      CUP_FIELD = false;
-      TSP_FIELD = false;
-      TBSP_FIELD = true;
-      QTS_FIELD = false;
-      GAL_FIELD = false;
-      PIN_FIELD = false;
-      FOZ_FIELD = false;
-      LIT_FIELD = false;
+   private void tbspTextFieldKeyPressed(java.awt.event.KeyEvent evt) {
+	   final int source = 3; // TBSP 
+	   for(US_VOL measure: volumes) {
+		   if(measure.getIndex() == source) {
+			   measure.setSource(true);
+		   } else {
+			   measure.setSource(false);
+		   }
+	   }
    }
    
-   private class customDocListener implements DocumentListener {
-      Document CUP_DOC = cupTextField.getDocument();
-      Document TSP_DOC = tspTextField.getDocument();
-      Document TBSP_DOC = tbspTextField.getDocument();
-      Document QTS_DOC = qtsTextField.getDocument();
-      Document GAL_DOC = galTextField.getDocument();
-      Document PIN_DOC = pinTextField.getDocument();
-      Document FOZ_DOC = fozTextField.getDocument();
-      Document LIT_DOC = litTextField.getDocument();
-      int source = 0;
-      
-      public void changedUpdate(DocumentEvent e) { update(e); }
-      public void removeUpdate(DocumentEvent e) { update(e); }
-      public void insertUpdate(DocumentEvent e) { update(e); }      
-      public void update(DocumentEvent e) {
-         Document doc = (Document)e.getDocument();
-         if(doc == CUP_DOC) source = 1;
-         if(doc == TSP_DOC) source = 2;
-         if(doc == TBSP_DOC) source = 3;
-         if(doc == QTS_DOC) source = 4;
-         if(doc == GAL_DOC) source = 5;
-         if(doc == PIN_DOC) source = 6;
-         if(doc == FOZ_DOC) source = 7;
-         if(doc == LIT_DOC) source = 8;
-         String val = "0.0";
-         try {
-            if(doc.getLength() > 0)
-               val = doc.getText(0, doc.getLength());
-            if(doc.getLength() == 1)
-               if(".".equals(doc.getText(0, 1)))
-                  val = "0.0";
-         } catch (BadLocationException ex) { }            
-         // Call will only matter if event is triggered by user input
-         switch(source) {
-            case 1:  if(CUP_FIELD) setConvertVal(CUP, new US_VOL(purifyStringToDouble(val), CUP));
-                     break;
-            case 2:  if(TSP_FIELD) setConvertVal(TSP, new US_VOL(purifyStringToDouble(val), TSP));
-                     break;
-            case 3:  if(TBSP_FIELD) setConvertVal(TBSP, new US_VOL(purifyStringToDouble(val), TBSP));
-                     break;
-            case 4:  if(QTS_FIELD) setConvertVal(QTS, new US_VOL(purifyStringToDouble(val), QTS));
-                     break;
-            case 5:  if(GAL_FIELD) setConvertVal(GAL, new US_VOL(purifyStringToDouble(val), GAL));
-                     break;
-            case 6:  if(PIN_FIELD) setConvertVal(PIN, new US_VOL(purifyStringToDouble(val), PIN));
-                     break;
-            case 7:  if(FOZ_FIELD) setConvertVal(FOZ, new US_VOL(purifyStringToDouble(val), FOZ));
-                     break;
-            case 8:  if(LIT_FIELD) setConvertVal(LIT, new US_VOL(purifyStringToDouble(val), LIT));
-                     break;
-         }
-      }
-   }
-   private class SliderListener implements ChangeListener {
-
-      @Override
-      public void stateChanged(ChangeEvent e) {
-         JSlider source = (JSlider) e.getSource();
-         if (!source.getValueIsAdjusting()) {
-            int val = (int) source.getValue();
-            scaleValues(val);
-         }
-      }
-   }
-   public class US_VOL {
-      // TODO: Make this a collection?
-
-      double cup; // Conversion unit
-      double tsp;
-      double tbsp;
-      double qts;
-      double gal;
-      double pin;
-      double lit;
-      double foz;
-      int source;
-
-      public US_VOL(double cup, int source) {
-         // Convert cup from whatever source it is into a cup...[continued below]
-         switch (source) {
-            case CUP:
-               this.cup = cup;
-               break;
-            case TSP:
-               this.cup = cup / CUP_TO_TSP;
-               break;
-            case TBSP:
-               this.cup = cup / CUP_TO_TBSP;
-               break;
-            case QTS:
-               this.cup = cup / CUP_TO_QTS;
-               break;
-            case GAL:
-               this.cup = cup / CUP_TO_GAL;
-               break;
-            case PIN:
-               this.cup = cup / CUP_TO_PIN;
-               break;
-            case FOZ:
-               this.cup = cup / CUP_TO_FOZ;
-               break;
-            case LIT:
-               this.cup = cup / CUP_TO_LIT;
-               break;
-            default:
-               this.cup = cup;
-               break;
-         }
-         // ...then convert from cup to all other units.
-         this.tsp = CUP_TO_TSP * this.cup;
-         this.tbsp = CUP_TO_TBSP * this.cup;
-         this.qts = CUP_TO_QTS * this.cup;
-         this.gal = CUP_TO_GAL * this.cup;
-         this.pin = CUP_TO_PIN * this.cup;
-         this.foz = CUP_TO_FOZ * this.cup;
-         this.lit = CUP_TO_LIT * this.cup;
-      }
-
-      public double getCup() {
-         return cup;
-      }
-
-      public void setCup(double cup) {
-         this.cup = cup;
-      }
-
-      public double getTsp() {
-         return tsp;
-      }
-
-      public void setTsp(double tsp) {
-         this.tsp = tsp;
-      }
-
-      public double getTbsp() {
-         return tbsp;
-      }
-
-      public void setTbsp(double tbsp) {
-         this.tbsp = tbsp;
-      }
-
-      public double getQts() {
-         return qts;
-      }
-
-      public void setQts(double qts) {
-         this.qts = qts;
-      }
-
-      public double getGal() {
-         return gal;
-      }
-
-      public void setGal(double gal) {
-         this.gal = gal;
-      }
-
-      public double getPin() {
-         return pin;
-      }
-
-      public void setPin(double pin) {
-         this.pin = pin;
-      }
-
-      public double getLit() {
-         return lit;
-      }
-
-      public void setLit(double lit) {
-         this.lit = lit;
-      }
-
-      public double getFoz() {
-         return foz;
-      }
-
-      public void setFoz(double foz) {
-         this.foz = foz;
-      }
-   }
-   public class ROUND {
-
-      int input;
-      int output = 1;
-      int scale = 125; // 1000 % scale must equal 0
-
-      public ROUND(String input) {
-         if (1000 % scale != 0) {
-            log("scale isn't properly set");
-         }
-         while (input.length() < 3) {
-            input = input + '0';
-         }
-         while (input.length() > 3) {
-            input = input.substring(0, 3);
-         }
-         int previous = 0;
-         int intInput = Integer.parseInt(input);         
-         for (int i = scale; i <= 1000; i += scale) {
-            if (intInput > previous && intInput <= i) {
-               if (intInput * 2 <= i) {
-                  // Round down
-                  output = previous;
-               } else {
-                  // Round up
-                  output = i;
-               }
-            }
-            previous = i;
-         }         
-      }
-
-      public int getInput() {
-         return input;
-      }
-
-      public void setInput(int input) {
-         this.input = input;
-      }
-
-      public int getOutput() {
-         return output;
-      }
-
-      public void setOutput(int output) {
-         this.output = output;
-      }
-   }
-
-   private double purifyStringToDouble(String input) {
-      // "Tiny" is caught and turned into 0.0
-      Double val = 0.0;
-      try {
-         val = Double.parseDouble(input);
-      } catch (NumberFormatException nfe) { }
-      return val;
+   private void initMeasures() {
+	   // Volume is initialized at start so as to be global
+	   volumes.add(new US_VOL(1, "CUP", 1.0, "", 0.0, 1, false, cupTextField));					// Cup = Base Unit
+	   volumes.add(new US_VOL(2, "TSP", 48.0, "", 0.0, 1, false, tspTextField));					// Teaspoon
+	   volumes.add(new US_VOL(3, "TBSP", 16.0, "", 0.0, 1, false, tbspTextField));			// Tablespoon
+	   volumes.add(new US_VOL(4, "FOZ", 8.0, "", 0.0, 1, false, fozTextField));					// Fluid ounce
+	   volumes.add(new US_VOL(5, "PIN", 0.5, "", 0.0, 1, false, pinTextField));					// Pint
+	   volumes.add(new US_VOL(6, "QTS", 0.25, "", 0.0, 1, false, qtsTextField));				// Quart
+	   volumes.add(new US_VOL(7, "GAL", (1.0 / 16.0), "", 0.0, 1, false, galTextField));		// Gallon
+	   volumes.add(new US_VOL(8, "LIT", 0.23659, "", 0.0, 1, false, litTextField));				// Liter
    }
    private void initListeners() {
       /* Set icon, default if fails */
@@ -754,7 +505,206 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          }
       });
    }
+   
+   private class customDocListener implements DocumentListener {
+      public void changedUpdate(DocumentEvent e) { update(e); }
+      public void removeUpdate(DocumentEvent e) { update(e); }
+      public void insertUpdate(DocumentEvent e) { update(e); }
+      public void update(DocumentEvent e) {
+    	  /* Only allow changes if KeyEvent is registered */
+    	  boolean proceed = false;
+    	  for(US_VOL measure: volumes) {
+    		  if(measure.isSource()) proceed = true;
+    	  }
+    	  if(proceed) {
+           resetScale();           
+    		  Document doc = e.getDocument();
+    		  String val = "0.0";
+    		  double input;
+    		  try {
+    			  /* Tidy up the received input */
+    			  if(doc.getLength() > 0)
+    				  val = doc.getText(0, doc.getLength());
+    			  if(doc.getLength() == 1)
+    				  if(".".equals(doc.getText(0, 1)))
+    					  val = "0.0";
+    		  } catch (BadLocationException ex) { }
+    		  input = purifyString(val);
+    		  /* Convert to base */
+    		  for(US_VOL measure: volumes) {
+    			  if(measure.getDoc() == doc) {
+    				  volumes.get(0).setAccurate(input / measure.getConversion());	// Convert to base
+    			  }
+    		  }
+    		  /* Convert all units from base */
+    		  for(US_VOL measure: volumes) {
+    			  measure.setAccurate(volumes.get(0).getAccurate() * measure.getConversion());
+    			  measure.setReadable(makeReadable(measure.getAccurate()));
+    		  }
+    		  SwingUtilities.invokeLater(setTextFields);
+    	  }
+      }
+   }
+   private class SliderListener implements ChangeListener {      
+      @Override
+      public void stateChanged(ChangeEvent e) {
+         if(scaleUserReset) {
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+               int val = (int) source.getValue();
+               scaleValues(val);
+            }
+         } else {
+            scaleUserReset = true;
+         }
+      }
+   }
+   
+   /**
+    * Holds elements of volume collection
+    * 
+    * @param int index
+    * @param String type
+    * @param double conversion
+    * @param String readable
+    * @param double accurate
+    * @param double scale
+    * @param boolean source
+    * @param JTextField textField
+    */
+   public class US_VOL {
+      private int index;
+      private String type;
+      private double conversion;
+      private String readable;
+      private double accurate;
+      private double scale;
+      private boolean source;
+      private JTextField textField;
+      public US_VOL(int index, String type, double conversion, String readable, double accurate, double scale, boolean source, JTextField textField) {
+    	  this.index = index;
+    	  this.type = type;
+    	  this.conversion = conversion;
+    	  this.readable = readable;
+    	  this.accurate = accurate;
+    	  this.scale = scale;
+    	  this.source = source;
+    	  this.textField = textField;
+      }
+      /* Nothing below this point but getters/setters */      
+      public int getIndex() {
+   		return index;
+   	}
+   	public void setIndex(int index) {
+   		this.index = index;
+   	}
+   	public String getType() {
+   		return type;
+   	}
+   	public void setType(String type) {
+   		this.type = type;
+   	}
+   	public double getConversion() {
+   		return conversion;
+   	}
+   	public void setConversion(double conversion) {
+   		this.conversion = conversion;
+   	}
+   	public String getReadable() {
+   		return readable;
+   	}
+   	public void setReadable(String readable) {
+   		this.readable = readable;
+   	}
+   	public double getAccurate() {
+   		return accurate;
+   	}
+   	public void setAccurate(double accurate) {
+   		this.accurate = accurate;
+   	}
+   	public double getScale() {
+   		return scale;
+   	}
+   	public void setScale(double scale) {
+   		this.scale = scale;
+   	}
+   	public boolean isSource() {
+   		return source;
+   	}
+   	public void setSource(boolean source) {
+   		this.source = source;
+   	}
+   	public JTextField getTextField() {
+   		return textField;
+   	}
+   	public void setDoc(JTextField textField) {
+   		this.textField = textField;
+   	}
+   	public Document getDoc() {
+   		return textField.getDocument();
+   	}
+   }
+   /**
+    * Rounds input to specified accuracy.
+    * 
+    * @param String input
+    * @return int output (via getOutput())
+    */
+   public class ROUND {
+      int input;
+      int output = 1;
+      int scale = 125; // 125 = 1/8 scale increments
+
+      public ROUND(String input) {
+         if (1000 % scale != 0) {
+            log("scale isn't properly set");
+         }
+         while (input.length() < 3) {
+            input = input + '0';
+         }
+         while (input.length() > 3) {
+            input = input.substring(0, 3);
+         }
+         int previous = 0;
+         int intInput = Integer.parseInt(input);         
+         for (int i = scale; i <= 1000; i += scale) {
+            if (intInput > previous && intInput <= i) {
+               if (intInput * 2 <= i) {
+                  // Round down
+                  output = previous;
+               } else {
+                  // Round up
+                  output = i;
+               }
+            }
+            previous = i;
+         }         
+      }
+      public void setInput(int input) {
+         this.input = input;
+      }
+      public int getOutput() {
+         return output;
+      }
+
+   }
+
+   /**
+    * Attempts to parseDouble(input).
+    * If Exception is caught, sets value to 0.0; effectively sets the value of input to 0.0 if input contains characters.
+    * 
+    * @param String input
+    * @return double val
+    */
+   private double purifyString(String input) {
+      Double val = 0.0;
+      try {
+         val = Double.parseDouble(input);
+      } catch (NumberFormatException nfe) { }
+      return val;
+   }
    private void scaleValues(int value) {
+      // Scale is reset on new entries and new field focus
       double scaleBy = 1.0;
       switch (value) {
          case 1:
@@ -778,43 +728,32 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          default:
             scaleBy = 1.0;
             break;
+      }      
+      for(US_VOL measure: volumes) {
+         measure.setAccurate((measure.getAccurate() / lastScale) * scaleBy);
+         measure.setReadable(makeReadable(measure.getAccurate()));
       }
-      scaleSlider.setValue(7);
-      Double val = purifyStringToDouble(cupTextField.getText());      
-      setConvertVal(0, new US_VOL(val * scaleBy, 0));
+    	SwingUtilities.invokeLater(setTextFields);
+      lastScale = scaleBy;
+      
+      //scaleSlider.setValue(7);
    }
-   private void setConvertVal(int source, US_VOL vol) {
-      // TODO: Reduce IFs if possible
-      if (source != CUP) {
-         cupTextField.setText(makeReadable(vol.getCup()));
-      }
-      if (source != TSP) {
-         tspTextField.setText(makeReadable(vol.getTsp()));
-      }
-      if (source != TBSP) {
-         tbspTextField.setText(makeReadable(vol.getTbsp()));
-      }
-      if (source != QTS) {
-         qtsTextField.setText(makeReadable(vol.getQts()));
-      }
-      if (source != GAL) {
-         galTextField.setText(makeReadable(vol.getGal()));
-      }
-      if (source != PIN) {
-         pinTextField.setText(makeReadable(vol.getPin()));
-      }
-      if (source != FOZ) {         
-         fozTextField.setText(makeReadable(vol.getFoz()));
-      }
-      if (source != LIT) {         
-         litTextField.setText(makeReadable(vol.getLit()));
-      }
-   }
+   /**
+    * Provides debugging output.
+    * 
+    * @param Object... args
+    * @return System.out.println
+    */
    private void log(Object... args) {
-      // WARNING: I'm not sure what will be inside Object at any given time.
       LOG_LINE_NUM++;
       System.out.println("L#" + LOG_LINE_NUM + ": " + args[0]);
-   }   
+   }
+   /**
+    * Receives a double and turns it into something reader-friendly
+    * 
+    * @param double d
+    * @return String preparedString
+    */
    private String makeReadable(double d) {
       String preparedString;
       if (d > 100) {
@@ -854,9 +793,30 @@ public class NumberAdditionUI extends javax.swing.JFrame {
 
       return preparedString;
    }
+   private void resetScale() {
+      scaleUserReset = false;
+      scaleSlider.setValue(7);
+      lastScale = 1.0;      
+   }
    
-   public static void main(String args[]) {
-      
+   /**
+    * Procedure must be called in this way
+    * because swing doesn't allow updates
+    * to listeners in listeners
+    */
+   Runnable setTextFields = new Runnable() {
+	   public void run() {
+		   for(US_VOL measure: volumes) {
+			   if(!measure.isSource()) {
+				   measure.getTextField().setText(measure.getReadable());
+			   } else {
+				   measure.setSource(false);
+			   }
+		   }		   
+	   }
+   };
+   
+   public static void main(String args[]) {      
       /* Set the Nimbus look and feel */
       //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
