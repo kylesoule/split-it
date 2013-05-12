@@ -522,13 +522,18 @@ public class NumberAdditionUI extends javax.swing.JFrame {
            resetScale();           
     		  String val = "0.0";
     		  double input;
+           /* Tidy up the received input */
     		  try {
-    			  /* Tidy up the received input */
-    			  if(doc.getLength() > 0)
-    				  val = doc.getText(0, doc.getLength());
-    			  if(doc.getLength() == 1)
-    				  if(".".equals(doc.getText(0, 1)))
-    					  val = "0.0";
+              /* Determine if fractional */
+              if(doc.getText(0, doc.getLength()).contains("/")) {
+                 val = fromFraction(doc.getText(0, doc.getLength()));
+              } else {
+                 if(doc.getLength() > 0)
+                    val = doc.getText(0, doc.getLength());
+       			  if(doc.getLength() == 1)
+       				  if(".".equals(doc.getText(0, 1)))
+                       val = "0.0";
+              }
     		  } catch (BadLocationException ex) { }
     		  input = purifyString(val);
     		  /* Convert to base */
@@ -540,9 +545,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
     		  /* Convert all units from base */
     		  for(US_VOL measure: volumes) {
     			  measure.setAccurate(volumes.get(0).getAccurate() * measure.getConversion());
-              log("Accurate for " + measure.getType() + " = " + measure.getAccurate());
     			  measure.setReadable(makeReadable(measure.getAccurate()));
-              log("Readable for " + measure.getType() + " = " + measure.getReadable());
     		  }
     		  SwingUtilities.invokeLater(setTextFields);
     	  }
@@ -751,12 +754,6 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       LOG_LINE_NUM++;
       System.out.println("L#" + LOG_LINE_NUM + ": " + args[0]);
    }
-   /**
-    * Turn decimal value into fraction
-    * 
-    * @param int input
-    * @return String output
-    */
    private String toFraction(int input) {
       String output = "";
       switch(input) {
@@ -775,6 +772,28 @@ public class NumberAdditionUI extends javax.swing.JFrame {
          case 875:   output = "7/8";
                      break;
       }
+      return output;
+   }
+   private String fromFraction(String input) {
+      String output = input;
+      String intPart = "";
+      double num = 1.0;
+      double den = 1.0;
+      String fractionalPart;
+      if(input.indexOf(" ") >= 0) {
+         intPart = input.substring(0, input.indexOf(" "));
+         fractionalPart = input.substring(input.indexOf(" ") + 1);
+      } else {
+         fractionalPart = input;
+      }
+      num = Double.parseDouble(fractionalPart.substring(0, fractionalPart.indexOf("/")) + ".0");
+      den = Double.parseDouble(fractionalPart.substring(fractionalPart.indexOf("/") + 1) + ".0");
+      if(den == 0.0) {
+         fractionalPart = "0";
+      } else {
+         fractionalPart = Double.toString(num / den).substring(2);
+      }
+      output = intPart + "." + fractionalPart;
       return output;
    }
    /**
@@ -839,7 +858,6 @@ public class NumberAdditionUI extends javax.swing.JFrame {
     */
    Runnable setTextFields = new Runnable() {
 	   public void run() {
-         log("Running meow");
 		   for(US_VOL measure: volumes) {
 			   if(!measure.isSource()) {
 				   measure.getTextField().setText(measure.getReadable());
