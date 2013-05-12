@@ -511,14 +511,15 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       public void removeUpdate(DocumentEvent e) { update(e); }
       public void insertUpdate(DocumentEvent e) { update(e); }
       public void update(DocumentEvent e) {
-    	  /* Only allow changes if KeyEvent is registered */
-    	  boolean proceed = false;
+        Document doc = e.getDocument();
+    	  /* Only allow changes if KeyEvent is registered and source is active */
+    	  boolean proceed = false;        
     	  for(US_VOL measure: volumes) {
-    		  if(measure.isSource()) proceed = true;
+    		  if(measure.isSource() && measure.getDoc() == doc)
+              proceed = true;
     	  }
     	  if(proceed) {
            resetScale();           
-    		  Document doc = e.getDocument();
     		  String val = "0.0";
     		  double input;
     		  try {
@@ -539,7 +540,9 @@ public class NumberAdditionUI extends javax.swing.JFrame {
     		  /* Convert all units from base */
     		  for(US_VOL measure: volumes) {
     			  measure.setAccurate(volumes.get(0).getAccurate() * measure.getConversion());
+              log("Accurate for " + measure.getType() + " = " + measure.getAccurate());
     			  measure.setReadable(makeReadable(measure.getAccurate()));
+              log("Readable for " + measure.getType() + " = " + measure.getReadable());
     		  }
     		  SwingUtilities.invokeLater(setTextFields);
     	  }
@@ -749,6 +752,32 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       System.out.println("L#" + LOG_LINE_NUM + ": " + args[0]);
    }
    /**
+    * Turn decimal value into fraction
+    * 
+    * @param int input
+    * @return String output
+    */
+   private String toFraction(int input) {
+      String output = "";
+      switch(input) {
+         case 125:   output = "1/8";
+                     break;
+         case 250:   output = "1/4";
+                     break;
+         case 375:   output = "3/8";
+                     break;
+         case 500:   output = "1/2";
+                     break;
+         case 625:   output = "5/8";
+                     break;
+         case 750:   output = "3/4";
+                     break;
+         case 875:   output = "7/8";
+                     break;
+      }
+      return output;
+   }
+   /**
     * Receives a double and turns it into something reader-friendly
     * 
     * @param double d
@@ -774,7 +803,8 @@ public class NumberAdditionUI extends javax.swing.JFrame {
                preparedString = Integer.toString(integerPlaces);               
             } else {
                integerPlaces = Integer.parseInt(preparedString.substring(0, integerPlaces));
-               preparedString = (Integer.toString(integerPlaces) + '.' + Integer.toString(roundedInt));
+               //preparedString = (Integer.toString(integerPlaces) + '.' + Integer.toString(roundedInt));
+               preparedString = (Integer.toString(integerPlaces) + ' ' + toFraction(roundedInt));
             }
          }
       } else {
@@ -784,11 +814,14 @@ public class NumberAdditionUI extends javax.swing.JFrame {
       while ("0".equals(preparedString.substring(preparedString.length() - 1))) {
          preparedString = preparedString.substring(0, preparedString.length() - 1);
       }
-      if (".".equals(preparedString.substring(preparedString.length() - 1))) {
+      if(".".equals(preparedString.substring(preparedString.length() - 1))) {
          preparedString = preparedString.substring(0, preparedString.length() - 1);
       }
-      if ("0".equals(preparedString)) {
+      if("0".equals(preparedString) || "0 ".equals(preparedString)) {
          preparedString = "Tiny";
+      }
+      if(preparedString.length() > 2 && "0 ".equals(preparedString.substring(0, 2))) {
+         preparedString = preparedString.substring(2);
       }
 
       return preparedString;
@@ -806,6 +839,7 @@ public class NumberAdditionUI extends javax.swing.JFrame {
     */
    Runnable setTextFields = new Runnable() {
 	   public void run() {
+         log("Running meow");
 		   for(US_VOL measure: volumes) {
 			   if(!measure.isSource()) {
 				   measure.getTextField().setText(measure.getReadable());
